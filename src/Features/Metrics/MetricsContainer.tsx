@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { makeStyles, Paper } from '@material-ui/core';
 
 import MultiSelect from '../../components/MultiSelect';
@@ -10,8 +10,8 @@ const useStyles = makeStyles({
   metricsContainer: {
     width: '80%',
     margin: '5% auto',
-    padding: '2em',
-    height: '90%',
+    padding: 30,
+    height: '95%',
   },
 });
 
@@ -22,9 +22,9 @@ const MetricsContainer: React.FC = () => {
 
   const metrics = useMetricsData();
 
-  const handleMetricsChange = useCallback((values: string[]) => {
+  const handleMetricsChange = (values: string[]) => {
     setSelectedMetrics(values);
-  }, []);
+  };
 
   return (
     <Paper className={classes.metricsContainer}>

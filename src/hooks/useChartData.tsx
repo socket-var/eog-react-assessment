@@ -4,7 +4,7 @@ import { useQuery } from 'urql';
 import { actions, MetricRecord } from '../Features/Chart/reducer';
 import { IState } from '../store';
 
-type ChartData = {
+export type ChartData = {
   at: number;
   [metric: string]: number;
 };
@@ -48,7 +48,7 @@ const query = `
 /**
  * fetches the data for the selected metrics over the past 30 minutes
  */
-export const useSelectedMetrics = (selectedMetrics: string[]) => {
+export const useChartData = (selectedMetrics: string[]) => {
   const dispatch = useDispatch();
   const measurements = useSelector(getMeasurements);
 
@@ -82,4 +82,4 @@ export const useSelectedMetrics = (selectedMetrics: string[]) => {
   return measurements;
 };
 
-export default useSelectedMetrics;
+export default useChartData;
