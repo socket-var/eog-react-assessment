@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSubscription } from 'urql';
 import { actions, MetricRecord } from '../Features/Chart/reducer';
@@ -35,7 +36,13 @@ export const useLiveData = () => {
     dispatch(actions.newMeasurementReceived(newMeasurement));
   };
 
-  useSubscription({ query: subscription }, handleNewMeasurement);
+  const [{ error }] = useSubscription({ query: subscription }, handleNewMeasurement);
+
+  useEffect(() => {
+    if (error) {
+      dispatch(actions.measurementsSubscriptionErrorReceived({ error: error.message }));
+    }
+  }, [error, dispatch]);
 
   return { measurements, units };
 };

@@ -88,7 +88,7 @@ export const useHistoricalData = (selectedMetrics: string[]) => {
 
   useEffect(() => {
     if (error) {
-      dispatch(actions.measurementsApiErrorReceived({ error: error.message }));
+      dispatch(actions.measurementsQueryErrorReceived({ error: error.message }));
       return;
     }
     if (!data) return;

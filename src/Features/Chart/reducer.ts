@@ -57,7 +57,8 @@ const slice = createSlice({
       state.isLive = !state.isLive;
       state.dataByMetric = {};
     },
-    measurementsApiErrorReceived: (state, action: PayloadAction<ApiErrorAction>) => state,
+    measurementsQueryErrorReceived: (state, action: PayloadAction<ApiErrorAction>) => state,
+    measurementsSubscriptionErrorReceived: (state, action: PayloadAction<ApiErrorAction>) => state,
   },
 });
 
