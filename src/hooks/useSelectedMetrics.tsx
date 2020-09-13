@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useQuery } from 'urql';
-import { actions, MeasurementsState } from '../Features/Metrics/Chart/reducer';
+import { actions, MeasurementsState } from '../Features/Chart/reducer';
 import { IState } from '../store';
 
 const getMeasurements = (state: IState): MeasurementsState => {

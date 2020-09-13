@@ -3,7 +3,7 @@ import { makeStyles, Paper } from '@material-ui/core';
 
 import MultiSelect from '../../components/MultiSelect';
 import useMetricsData from '../../hooks/useMetricsData';
-import ChartContainer from './Chart/ChartContainer';
+import ChartContainer from '../Chart/ChartContainer';
 
 const useStyles = makeStyles({
   metricsContainer: {
@@ -14,7 +14,7 @@ const useStyles = makeStyles({
   },
 });
 
-const MetricsContainer: React.FC = ({ children }) => {
+const MetricsContainer: React.FC = () => {
   const classes = useStyles();
 
   const [selectedMetrics, setSelectedMetrics] = useState<string[]>([]);
