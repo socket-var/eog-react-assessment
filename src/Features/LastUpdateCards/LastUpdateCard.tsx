@@ -10,7 +10,7 @@ interface ComponentProps {
 
 const useStyles = makeStyles({
   card: {
-    width: 300,
+    width: 400,
     padding: 10,
     display: 'inline-block',
   },
@@ -30,7 +30,7 @@ export const LastUpdateCard = ({ metricName }: ComponentProps) => {
       <CardHeader title={metricName} />
       <CardContent>
         <Typography variant="h3" component="span">
-          {selectedMeasurement.value}
+          {selectedMeasurement.value} {selectedMeasurement.unit}
         </Typography>
         <Typography variant="body2" component="p">
           At: {moment(Number(selectedMeasurement.at)).format('hh:mm:ss A')}

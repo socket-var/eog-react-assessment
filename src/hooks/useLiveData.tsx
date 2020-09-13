@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useSubscription } from 'urql';
 import { actions, MetricRecord } from '../Features/Chart/reducer';
-import { IState } from '../store';
+import { getMeasurements, getUnits } from './useHistoricalData';
 
 export type ChartData = {
   at: number;
@@ -10,24 +10,6 @@ export type ChartData = {
 
 export type ChartDataByTimestamp = {
   [at: number]: ChartData;
-};
-
-const getMeasurements = (state: IState): ChartData[] => {
-  const measurements = Object.values(state.measurements.dataByMetric);
-  let flattenedMeasurements: MetricRecord[] = [];
-  measurements.forEach((item: MetricRecord[]) => {
-    flattenedMeasurements = flattenedMeasurements.concat(item);
-  });
-
-  const dataGroupedByTimestamp: ChartDataByTimestamp = {};
-  flattenedMeasurements.forEach(({ at, metric, value }) => {
-    if (at in dataGroupedByTimestamp) {
-      dataGroupedByTimestamp[at][metric] = value;
-    } else {
-      dataGroupedByTimestamp[at] = { at, [metric]: value };
-    }
-  });
-  return Object.values(dataGroupedByTimestamp);
 };
 
 const subscription = `
@@ -47,6 +29,7 @@ const subscription = `
 export const useLiveData = () => {
   const dispatch = useDispatch();
   const measurements = useSelector(getMeasurements);
+  const units = useSelector(getUnits);
 
   const handleNewMeasurement = (_: unknown, { newMeasurement }: { newMeasurement: MetricRecord }) => {
     dispatch(actions.newMeasurementReceived(newMeasurement));
@@ -54,7 +37,7 @@ export const useLiveData = () => {
 
   useSubscription({ query: subscription }, handleNewMeasurement);
 
-  return measurements;
+  return { measurements, units };
 };
 
 export default useLiveData;

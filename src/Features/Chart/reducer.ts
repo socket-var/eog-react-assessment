@@ -19,10 +19,10 @@ export type ApiErrorAction = {
 export type MeasurementsState = {
   isLive: boolean;
   dataByMetric: {
-    [metric: string]: MetricRecord[];
+    [metric: string]: { unit: string; data: MetricRecord[] };
   };
   lastValueByMetric: {
-    [metric: string]: { value: number; at: number };
+    [metric: string]: { value: number; at: number; unit: string };
   };
 };
 
@@ -35,18 +35,23 @@ const slice = createSlice({
     measurementsDataReceived: (state, action: PayloadAction<MeasurementResponse[]>) => {
       for (let row of action.payload) {
         const { metric, measurements } = row;
-        state.dataByMetric[metric] = (state.dataByMetric[metric] || []).concat(measurements);
-        const { at, value } = measurements[measurements.length - 1];
-        state.lastValueByMetric[metric] = { at, value };
+        if (!state.dataByMetric[metric]) {
+          state.dataByMetric[metric] = { unit: '', data: [] };
+        }
+        state.dataByMetric[metric].data = (state.dataByMetric[metric].data || []).concat(measurements);
+        const { at, value, unit } = measurements[measurements.length - 1];
+        state.dataByMetric[metric].unit = unit;
+        state.lastValueByMetric[metric] = { at, value, unit };
       }
     },
     newMeasurementReceived: (state, action: PayloadAction<MetricRecord>) => {
-      const { metric, at, value } = action.payload;
+      const { metric, at, value, unit } = action.payload;
       if (!state.dataByMetric[metric]) {
-        state.dataByMetric[metric] = [];
+        state.dataByMetric[metric] = { unit, data: [] };
       }
-      state.dataByMetric[metric].push(action.payload);
-      state.lastValueByMetric[metric] = { at, value };
+      state.dataByMetric[metric].data.push(action.payload);
+      state.dataByMetric[metric].unit = unit;
+      state.lastValueByMetric[metric] = { at, value, unit };
     },
     toggleLiveStatus: state => {
       state.isLive = !state.isLive;

@@ -13,11 +13,11 @@ export type ChartDataByTimestamp = {
   [at: number]: ChartData;
 };
 
-const getMeasurements = (state: IState): ChartData[] => {
+export const getMeasurements = (state: IState): ChartData[] => {
   const measurements = Object.values(state.measurements.dataByMetric);
   let flattenedMeasurements: MetricRecord[] = [];
-  measurements.forEach((item: MetricRecord[]) => {
-    flattenedMeasurements = flattenedMeasurements.concat(item);
+  measurements.forEach(({ data }) => {
+    flattenedMeasurements = flattenedMeasurements.concat(data);
   });
 
   const dataGroupedByTimestamp: ChartDataByTimestamp = {};
@@ -29,6 +29,14 @@ const getMeasurements = (state: IState): ChartData[] => {
     }
   });
   return Object.values(dataGroupedByTimestamp);
+};
+
+export const getUnits = (state: IState) => {
+  return Object.fromEntries(
+    Object.entries(state.measurements.dataByMetric).map(([key, { unit }]) => {
+      return [key, unit];
+    }),
+  );
 };
 
 const query = `
@@ -56,6 +64,7 @@ const query = `
 export const useHistoricalData = (selectedMetrics: string[]) => {
   const dispatch = useDispatch();
   const measurements = useSelector(getMeasurements);
+  const units = useSelector(getUnits);
 
   const intervalId = useRef<number | undefined>(undefined);
   const [after, setAfter] = useState(Date.now() - 30 * 60 * 1000);
@@ -97,7 +106,7 @@ export const useHistoricalData = (selectedMetrics: string[]) => {
     };
   }, []);
 
-  return measurements;
+  return { measurements, units };
 };
 
 export default useHistoricalData;
