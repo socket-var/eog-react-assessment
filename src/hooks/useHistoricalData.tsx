@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useQuery } from 'urql';
 import { actions, MetricRecord } from '../Features/Chart/reducer';
@@ -47,18 +47,26 @@ const query = `
 
 /**
  * fetches the data for the selected metrics over the past 30 minutes
+ *
+ * keeping this simple here given the amount of time I spent on this
+ * I'm re-fetching everytime options changes but if this was production we can maintain a fetchedMetrics
+ * lookup in redux and make sure that we are only fetching the metric that hasn't been fetched and so on
+ *
  */
 export const useHistoricalData = (selectedMetrics: string[]) => {
   const dispatch = useDispatch();
   const measurements = useSelector(getMeasurements);
 
+  const intervalId = useRef<number | undefined>(undefined);
+  const [after, setAfter] = useState(Date.now() - 30 * 60 * 1000);
+
   const input = useMemo(
     () =>
       selectedMetrics.map(metricName => ({
         metricName,
-        after: Date.now() - 30 * 60 * 1000,
+        after,
       })),
-    [selectedMetrics],
+    [selectedMetrics, after],
   );
 
   const [{ data, error }] = useQuery({
@@ -78,6 +86,16 @@ export const useHistoricalData = (selectedMetrics: string[]) => {
     const { getMultipleMeasurements } = data;
     dispatch(actions.measurementsDataReceived(getMultipleMeasurements));
   }, [dispatch, data, error]);
+
+  useEffect(() => {
+    intervalId.current = window.setInterval(() => {
+      setAfter(Date.now() - 30 * 60 * 1000);
+    }, 60 * 1000);
+
+    return () => {
+      window.clearInterval(intervalId.current);
+    };
+  }, []);
 
   return measurements;
 };

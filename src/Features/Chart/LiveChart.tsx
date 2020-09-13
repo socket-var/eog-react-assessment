@@ -9,7 +9,11 @@ interface ComponentProps {
 const LiveChart = ({ selectedMetrics }: ComponentProps) => {
   const measurements = useLiveData();
 
-  return <MetricsChart selectedMetrics={selectedMetrics} measurements={measurements} />;
+  return (
+    <>
+      <MetricsChart selectedMetrics={selectedMetrics} measurements={measurements} />
+    </>
+  );
 };
 
 export default LiveChart;

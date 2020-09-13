@@ -15,7 +15,12 @@ const useStyles = makeStyles({
     width: '80%',
     margin: '5% auto',
     padding: 30,
-    height: '95%',
+    minHeight: '80vh',
+  },
+  formContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
 });
 
@@ -42,23 +47,25 @@ const MetricsContainer: React.FC = () => {
 
   return (
     <Paper className={classes.metricsContainer}>
-      <MultiSelect label="Choose Metric(s)" options={metrics} handleChange={handleMetricsChange} />
-      <FormControl>
-        <FormControlLabel
-          value="start"
-          control={
-            <Switch
-              checked={isLive}
-              onChange={handleChartTypeChange}
-              color="primary"
-              name="chartType"
-              inputProps={{ 'aria-label': 'primary checkbox' }}
-            />
-          }
-          label="Live"
-          labelPlacement="start"
-        />
-      </FormControl>
+      <div className={classes.formContainer}>
+        <MultiSelect label="Choose Metric(s)" options={metrics} handleChange={handleMetricsChange} />
+        <FormControl>
+          <FormControlLabel
+            value="isLive"
+            control={
+              <Switch
+                checked={isLive}
+                onChange={handleChartTypeChange}
+                color="primary"
+                name="chartType"
+                inputProps={{ 'aria-label': 'primary checkbox' }}
+              />
+            }
+            label="Live"
+            labelPlacement="start"
+          />
+        </FormControl>
+      </div>
       <LastUpdateCardContainer selectedMetrics={selectedMetrics} />
       {selectedMetrics.length > 0 ? (
         isLive ? (
