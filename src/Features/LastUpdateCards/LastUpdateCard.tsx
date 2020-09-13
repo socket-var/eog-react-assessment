@@ -33,7 +33,7 @@ export const LastUpdateCard = ({ metricName }: ComponentProps) => {
           {selectedMeasurement.value}
         </Typography>
         <Typography variant="body2" component="p">
-          At: {moment(Number(selectedMeasurement.at)).format('HH:MM:SS A')}
+          At: {moment(Number(selectedMeasurement.at)).format('hh:mm:ss A')}
         </Typography>
       </CardContent>
     </Card>

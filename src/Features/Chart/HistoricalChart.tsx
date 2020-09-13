@@ -1,5 +1,5 @@
 import React from 'react';
-import useChartData from '../../hooks/useChartData';
+import useChartData from '../../hooks/useHistoricalData';
 import { MetricsChart } from './MetricsChart';
 
 interface ComponentProps {

@@ -17,6 +17,7 @@ export type ApiErrorAction = {
 };
 
 export type MeasurementsState = {
+  isLive: boolean;
   dataByMetric: {
     [metric: string]: MetricRecord[];
   };
@@ -25,7 +26,7 @@ export type MeasurementsState = {
   };
 };
 
-const initialState: MeasurementsState = { dataByMetric: {}, lastValueByMetric: {} };
+const initialState: MeasurementsState = { isLive: false, dataByMetric: {}, lastValueByMetric: {} };
 
 const slice = createSlice({
   name: 'measurements',
@@ -38,6 +39,18 @@ const slice = createSlice({
         const { at, value } = measurements[measurements.length - 1];
         state.lastValueByMetric[metric] = { at, value };
       }
+    },
+    newMeasurementReceived: (state, action: PayloadAction<MetricRecord>) => {
+      const { metric, at, value } = action.payload;
+      if (!state.dataByMetric[metric]) {
+        state.dataByMetric[metric] = [];
+      }
+      state.dataByMetric[metric].push(action.payload);
+      state.lastValueByMetric[metric] = { at, value };
+    },
+    toggleLiveStatus: state => {
+      state.isLive = !state.isLive;
+      state.dataByMetric = {};
     },
     measurementsApiErrorReceived: (state, action: PayloadAction<ApiErrorAction>) => state,
   },

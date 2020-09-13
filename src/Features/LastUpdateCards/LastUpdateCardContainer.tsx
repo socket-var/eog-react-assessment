@@ -17,7 +17,7 @@ export const LastUpdateCardContainer = ({ selectedMetrics }: Props) => {
   return (
     <Grid container spacing={3} className={classes.grid}>
       {selectedMetrics.map(selectedMetric => (
-        <Grid item>
+        <Grid item key={selectedMetric}>
           <LastUpdateCard metricName={selectedMetric} />
         </Grid>
       ))}

@@ -1,6 +1,5 @@
-import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useQuery } from 'urql';
+import { useSubscription } from 'urql';
 import { actions, MetricRecord } from '../Features/Chart/reducer';
 import { IState } from '../store';
 
@@ -31,55 +30,31 @@ const getMeasurements = (state: IState): ChartData[] => {
   return Object.values(dataGroupedByTimestamp);
 };
 
-const query = `
-  query ($input: [MeasurementQuery]) {
-    getMultipleMeasurements(input: $input) {
-      metric
-      measurements {
-        at
-        value
-        metric
-        unit
-      }
-    }
+const subscription = `
+  subscription {
+  newMeasurement {
+    metric
+    at
+    value
+    unit
   }
+}
 `;
 
 /**
- * fetches the data for the selected metrics over the past 30 minutes
+ * fetches live data using graphql subscriptions
  */
-export const useChartData = (selectedMetrics: string[]) => {
+export const useLiveData = () => {
   const dispatch = useDispatch();
   const measurements = useSelector(getMeasurements);
 
-  const input = useMemo(
-    () =>
-      selectedMetrics.map(metricName => ({
-        metricName,
-        after: Date.now() - 30 * 60 * 1000,
-      })),
-    [selectedMetrics],
-  );
+  const handleNewMeasurement = (_: unknown, { newMeasurement }: { newMeasurement: MetricRecord }) => {
+    dispatch(actions.newMeasurementReceived(newMeasurement));
+  };
 
-  const [{ data, error }] = useQuery({
-    query,
-    variables: {
-      input,
-    },
-    pause: selectedMetrics.length === 0,
-  });
-
-  useEffect(() => {
-    if (error) {
-      dispatch(actions.measurementsApiErrorReceived({ error: error.message }));
-      return;
-    }
-    if (!data) return;
-    const { getMultipleMeasurements } = data;
-    dispatch(actions.measurementsDataReceived(getMultipleMeasurements));
-  }, [dispatch, data, error]);
+  useSubscription({ query: subscription }, handleNewMeasurement);
 
   return measurements;
 };
 
-export default useChartData;
+export default useLiveData;

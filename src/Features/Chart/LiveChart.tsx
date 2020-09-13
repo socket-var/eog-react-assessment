@@ -1,5 +1,5 @@
 import React from 'react';
-import useChartData from '../../hooks/useChartData';
+import useLiveData from '../../hooks/useLiveData';
 import { MetricsChart } from './MetricsChart';
 
 interface ComponentProps {
@@ -7,7 +7,7 @@ interface ComponentProps {
 }
 
 const LiveChart = ({ selectedMetrics }: ComponentProps) => {
-  const measurements = useChartData(selectedMetrics);
+  const measurements = useLiveData();
 
   return <MetricsChart selectedMetrics={selectedMetrics} measurements={measurements} />;
 };
