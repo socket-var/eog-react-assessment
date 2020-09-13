@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, Label, ResponsiveContainer } from 'recharts';
 import CustomTooltip from './CustomTooltip';
 import CustomTick from './CustomTick';
@@ -20,13 +20,26 @@ interface Props {
 }
 
 export const MetricsChart = ({ selectedMetrics, measurements, units }: Props) => {
+  /**
+   * retrieves a list of unique units corresponding to the selected metrics
+   * this is used to conditionally render y axes
+   */
+  const selectedUnits = useMemo(() => {
+    const result = new Set<string>();
+    for (let metric of selectedMetrics) {
+      result.add(units[metric]);
+    }
+
+    return Array.from<string>(result);
+  }, [selectedMetrics, units]);
+
   return (
     <div>
       {measurements.length > 0 ? (
         <ResponsiveContainer width="90%" height={600}>
           <LineChart data={measurements} margin={{ top: 5, bottom: 5 }}>
             <XAxis dataKey="at" tick={CustomTick} />
-            {Array.from(new Set(Object.values(units))).map(unit => (
+            {selectedUnits.map(unit => (
               <YAxis key={unit} yAxisId={unit} padding={{ top: 20, bottom: 20 }}>
                 <Label angle={-90} value={unit} position="insideTopLeft" style={{ textAnchor: 'middle' }} />
               </YAxis>

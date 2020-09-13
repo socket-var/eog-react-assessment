@@ -17,13 +17,22 @@ export type ApiErrorAction = {
 };
 
 export type MeasurementsState = {
-  isLive: boolean;
+  /** measurements data indexed by metric name
+   */
   dataByMetric: {
     [metric: string]: { unit: string; data: MetricRecord[] };
   };
+  /**
+   * used by the LastUpdatedCards to efficiently get the last updated value
+   * corresponding to a metric
+   */
   lastValueByMetric: {
     [metric: string]: { value: number; at: number; unit: string };
   };
+  /** specifies whether the data is live or historical. WOuld use a union for different retrieval types if this is in production
+   * but keeping it simple here
+   */
+  isLive: boolean;
 };
 
 const initialState: MeasurementsState = { isLive: false, dataByMetric: {}, lastValueByMetric: {} };

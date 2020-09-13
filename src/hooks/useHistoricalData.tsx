@@ -13,6 +13,10 @@ export type ChartDataByTimestamp = {
   [at: number]: ChartData;
 };
 
+/** takes the data indexed by metric name and flattens the data
+ * into an an array of {at: number, [metricName: string]: string}
+ * so that this can be consumed by the live chart
+ */
 export const getMeasurements = (state: IState): ChartData[] => {
   const measurements = Object.values(state.measurements.dataByMetric);
   let flattenedMeasurements: MetricRecord[] = [];
