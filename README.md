@@ -53,6 +53,8 @@ Read more about this assessment [here](https://react.eogresources.com)
 
 ## Screen recording:
 
+https://www.loom.com/share/04738c85c79f4901aa3ade9e4b58bf1b
+
 ## Closing remarks:
 
 Just wanted to say thank you for putting so much thought into making this assessment! The instructions and the starter project have made it so easy for me to get started.
