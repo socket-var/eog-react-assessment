@@ -39,11 +39,13 @@ export const MetricsChart = ({ selectedMetrics, measurements, units }: Props) =>
         <ResponsiveContainer width="90%" height={600}>
           <LineChart data={measurements} margin={{ top: 5, bottom: 5 }}>
             <XAxis dataKey="at" tick={CustomTick} />
-            {selectedUnits.map(unit => (
-              <YAxis key={unit} yAxisId={unit} padding={{ top: 20, bottom: 20 }}>
-                <Label angle={-90} value={unit} position="insideTopLeft" style={{ textAnchor: 'middle' }} />
-              </YAxis>
-            ))}
+            {selectedUnits.map(unit => {
+              return unit ? (
+                <YAxis key={unit} yAxisId={unit} padding={{ top: 20, bottom: 20 }}>
+                  <Label angle={-90} value={unit} position="insideTopLeft" style={{ textAnchor: 'middle' }} />
+                </YAxis>
+              ) : null;
+            })}
             <Tooltip content={<CustomTooltip />} isAnimationActive={false} />
             <Legend />
             {selectedMetrics.map(metric => (
