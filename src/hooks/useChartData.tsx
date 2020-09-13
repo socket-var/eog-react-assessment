@@ -1,11 +1,34 @@
 import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useQuery } from 'urql';
-import { actions, MeasurementsState } from '../Features/Chart/reducer';
+import { actions, MetricRecord } from '../Features/Chart/reducer';
 import { IState } from '../store';
 
-const getMeasurements = (state: IState): MeasurementsState => {
-  return state.measurements;
+type ChartData = {
+  at: number;
+  [metric: string]: number;
+};
+
+export type ChartDataByTimestamp = {
+  [at: number]: ChartData;
+};
+
+const getMeasurements = (state: IState): ChartData[] => {
+  const measurements = Object.values(state.measurements.dataByMetric);
+  let flattenedMeasurements: MetricRecord[] = [];
+  measurements.forEach((item: MetricRecord[]) => {
+    flattenedMeasurements = flattenedMeasurements.concat(item);
+  });
+
+  const dataGroupedByTimestamp: ChartDataByTimestamp = {};
+  flattenedMeasurements.forEach(({ at, metric, value }) => {
+    if (at in dataGroupedByTimestamp) {
+      dataGroupedByTimestamp[at][metric] = value;
+    } else {
+      dataGroupedByTimestamp[at] = { at, [metric]: value };
+    }
+  });
+  return Object.values(dataGroupedByTimestamp);
 };
 
 const query = `
@@ -43,6 +66,7 @@ export const useSelectedMetrics = (selectedMetrics: string[]) => {
     variables: {
       input,
     },
+    pause: selectedMetrics.length === 0,
   });
 
   useEffect(() => {

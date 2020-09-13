@@ -1,9 +1,10 @@
 import { createSlice, PayloadAction } from 'redux-starter-kit';
 
-interface MetricRecord {
+export interface MetricRecord {
   value: number;
   at: number;
   metric: string;
+  unit: string;
 }
 
 interface MeasurementResponse {
@@ -16,13 +17,12 @@ export type ApiErrorAction = {
 };
 
 export type MeasurementsState = {
-  [at: number]: {
-    at: number;
-    [metric: string]: number;
+  dataByMetric: {
+    [metric: string]: MetricRecord[];
   };
 };
 
-const initialState: MeasurementsState = {};
+const initialState: MeasurementsState = { dataByMetric: {} };
 
 const slice = createSlice({
   name: 'measurements',
@@ -31,14 +31,7 @@ const slice = createSlice({
     measurementsDataReceived: (state, action: PayloadAction<MeasurementResponse[]>) => {
       for (let row of action.payload) {
         const { metric, measurements } = row;
-
-        for (let { at, value } of measurements) {
-          if (at in state) {
-            state[at][metric] = value;
-          } else {
-            state[at] = { at, [metric]: value };
-          }
-        }
+        state.dataByMetric[metric] = (state.dataByMetric[metric] || []).concat(measurements);
       }
     },
     measurementsApiErrorReceived: (state, action: PayloadAction<ApiErrorAction>) => state,
