@@ -21,7 +21,7 @@ const useMetricsData = () => {
   const dispatch = useDispatch();
   const metrics = useSelector(getMetrics);
 
-  const [{ fetching, data, error }] = useQuery({
+  const [{ data, error }] = useQuery({
     query,
   });
 

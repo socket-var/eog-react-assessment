@@ -61,7 +61,7 @@ export const useSelectedMetrics = (selectedMetrics: string[]) => {
     [selectedMetrics],
   );
 
-  const [{ fetching, data, error }] = useQuery({
+  const [{ data, error }] = useQuery({
     query,
     variables: {
       input,

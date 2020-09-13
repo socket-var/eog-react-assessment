@@ -4,6 +4,7 @@ import { makeStyles, Paper } from '@material-ui/core';
 import MultiSelect from '../../components/MultiSelect';
 import useMetricsData from '../../hooks/useMetricsData';
 import ChartContainer from '../Chart/ChartContainer';
+import { LastUpdateCardContainer } from '../LastUpdateCards/LastUpdateCardContainer';
 
 const useStyles = makeStyles({
   metricsContainer: {
@@ -28,6 +29,7 @@ const MetricsContainer: React.FC = () => {
   return (
     <Paper className={classes.metricsContainer}>
       <MultiSelect label="Choose Metric(s)" options={metrics} handleChange={handleMetricsChange} />
+      <LastUpdateCardContainer selectedMetrics={selectedMetrics} />
       <ChartContainer selectedMetrics={selectedMetrics} />
     </Paper>
   );

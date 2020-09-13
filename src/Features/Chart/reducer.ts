@@ -20,9 +20,12 @@ export type MeasurementsState = {
   dataByMetric: {
     [metric: string]: MetricRecord[];
   };
+  lastValueByMetric: {
+    [metric: string]: { value: number; at: number };
+  };
 };
 
-const initialState: MeasurementsState = { dataByMetric: {} };
+const initialState: MeasurementsState = { dataByMetric: {}, lastValueByMetric: {} };
 
 const slice = createSlice({
   name: 'measurements',
@@ -32,6 +35,8 @@ const slice = createSlice({
       for (let row of action.payload) {
         const { metric, measurements } = row;
         state.dataByMetric[metric] = (state.dataByMetric[metric] || []).concat(measurements);
+        const { at, value } = measurements[measurements.length - 1];
+        state.lastValueByMetric[metric] = { at, value };
       }
     },
     measurementsApiErrorReceived: (state, action: PayloadAction<ApiErrorAction>) => state,
